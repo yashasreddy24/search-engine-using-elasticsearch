@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.17.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+  ubuntu_with_python:
+    build:
+      context: .
+      dockerfile: es.Dockerfile
+    image: ubuntu-custom
+    container_name: ubuntu_with_python
+    ports:
+      - 8888:8888
+    networks:
+      - elastic
+
+volumes:
+  elastic_data:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
